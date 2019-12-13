@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<!--G00349377 - Jake Warren-->
+<!--Emerging Technologies Project 2019-->
+
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Hand-Written Digit Prediction</title>
+	<style>
+	#body{
+	background-color: grey;
+	}
+	 #canDiv {
+            margin: 0px auto;
+            align: center;
+            width: 400px;
+            height: 400px;
+            background-color: black;
+        }
+	h2 {
+		color: black;
+	}
+	 #predDiv {
+		margin: 0px auto;
+		text-align: center;
+		color: #ffb900;
+		font-size: 24px;
+	}
+	#buttonDiv {
+		margin: 0px auto;
+		text-align: center;
+		button
+	}
+	button {
+	  background-color: #4CAF50;
+	  border: none;
+	  color: white;
+	  padding: 15px 32px;
+	  text-align: center;
+	  font-size: 18px;
+	}
+	
+	</style>
+</head>
+
+<body id="body">
+
+	<div id="canDiv">
+		<canvas id="myCan"></canvas>
+	</div>
+	<div id="predDiv">
+		<h2>Prediction: </h2>
+		<p id="predNum"></p>
+	</div>
+	
+	<div id="buttonDiv">
+		<button onclick="reset()">Reset</button>
+		<button onclick="predict()">Predict</button>
+	</div>
+	
+</body>
+
+<!--Importing jquery-->
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script>
+	var canvas = document.getElementById('myCan');
+	var ctx = canvas.getContext ('2d');
+	
+	var paint = document.getElementById('canDiv');
+	var paintStyle = getComputedStyle(paint);
+	canvas.width = parseInt(paintStyle.getPropertyValue('width'));
+    canvas.height = parseInt(paintStyle.getPropertyValue('height'));
+    
+    var mouse = { x: 0, y: 0 };
+	
+	canvas.addEventListener('mousemove', function(e) {
+	  mouse.x = e.pageX - this.offsetLeft;
+	  mouse.y = e.pageY - this.offsetTop;
+	}, false);
+
+	//Initialises the canvas stroke/paint style
+	ctx.lineWidth = 3;
+	ctx.lineJoin = 'round';
+	ctx.lineCap = 'round';
+	ctx.strokeStyle = '#fa3c5a';
+	 
+	canvas.addEventListener('mousedown', function(e) {
+		ctx.beginPath();
+		ctx.moveTo(mouse.x, mouse.y);
+	 
+		canvas.addEventListener('mousemove', onPaint, false);
+	}, false);
+	 
+	canvas.addEventListener('mouseup', function() {
+		canvas.removeEventListener('mousemove', onPaint, false);
+	}, false);
+	 
+	var onPaint = function() {
+		ctx.lineTo(mouse.x, mouse.y);
+		ctx.stroke();
+	};
+
+	function reset() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            $('#predNum').text('');
+        }//Reset
+		
+	function predict() {
+		var canvas = document.getElementById("myCan");
+		var dataURL = canvas.toDataURL();
+		console.log(dataURL);
+   
+		$.ajax({
+			type: 'POST',
+			url: '/predict',
+			data: {
+				imgBase64: dataURL
+			}
+		}).done(function (data) {
+			console.log('SENT');
+			console.log(data);
+			$("#predNum").empty().append(data);
+		});
+	};//Predict
+
+</script>
+</html>
+<!--References
+Adapted from: 
+https://www.html5canvastutorials.com/labs/html5-canvas-paint-application/
+-->
