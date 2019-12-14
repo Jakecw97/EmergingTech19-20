@@ -1,5 +1,8 @@
 # EmergingTech19-20
  Emerging Technologies module 19/20
+# Video Presentations
+https://youtu.be/DT9CChJnyhI
+
 
 ![Keras and TensorFlow](https://miro.medium.com/max/600/1*HLziSq4zU8TNCNJBuuQQVw.jpeg)
 ![Neural Network](https://blog.aimultiple.com/wp-content/uploads/2017/08/neural-network.png)
